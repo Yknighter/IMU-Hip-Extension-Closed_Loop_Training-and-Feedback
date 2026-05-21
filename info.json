@@ -1,0 +1,447 @@
+{
+  "user_guide_file": "Hip Extension App Guide.pdf",
+  "app_name": "IMU Hip Extension Feedback",
+  "app_description": "Phase 1 hip extension feedback app using pelvis, right thigh, and left thigh IMU nodes. Feedback is only allowed when the right leg is in the target back-leg phase, the left thigh is forward, and the right hip is entering extension. Slow motions are handled with a trend window. v1.4.1 adds UDP orientation streaming diagnostics for a desktop 3D viewer. <br><br>Nodes Required: 4 <br> -Sensing (3): pelvis (back center, switch pointing up), right_thigh (right lateral thigh, switch pointing up), left_thigh (left lateral thigh, switch pointing up) <br> -Feedback (1): feedback_min",
+  "app_id": "901",
+  "app_version": "1_4_1",
+  "version_id": "901141",
+  "validated_version_range": [
+    "3.20.1",
+    "4.6.6"
+  ],
+  "parameters_setting": [
+    [
+      "Bilateral Phase Gate",
+      {
+        "source": "phase_gate_enabled",
+        "title": "Enable Bilateral Phase Gate",
+        "type": "bool",
+        "description": "Only allow feedback when right leg is back and left thigh is forward"
+      },
+      {
+        "source": "right_phase_threshold",
+        "title": "Right Leg Back Threshold",
+        "type": "float",
+        "validation": [
+          -90,
+          90
+        ],
+        "description": "Threshold used to decide if the right thigh is in the target back-leg phase"
+      },
+      {
+        "source": "right_phase_direction",
+        "title": "Right Leg Back Direction",
+        "type": "combo",
+        "validation": [
+          "above",
+          "below"
+        ],
+        "description": "Direction for the right leg back phase threshold"
+      },
+      {
+        "source": "left_forward_threshold",
+        "title": "Left Thigh Forward Threshold",
+        "type": "float",
+        "validation": [
+          -90,
+          90
+        ],
+        "description": "Threshold used to decide if the left thigh is forward"
+      },
+      {
+        "source": "left_forward_direction",
+        "title": "Left Thigh Forward Direction",
+        "type": "combo",
+        "validation": [
+          "above",
+          "below"
+        ],
+        "description": "Direction for the left thigh forward threshold"
+      }
+    ],
+    [
+      "Feedback Setting",
+      {
+        "source": "feedback_enabled",
+        "title": "Enable Feedback",
+        "type": "bool",
+        "description": "Enable/Disable feedback"
+      },
+      {
+        "source": "feedback_mode",
+        "title": "Feedback Mode",
+        "type": "combo",
+        "validation": [
+          "angle",
+          "gyro_mag",
+          "acc_mag"
+        ],
+        "description": "Signal used for threshold feedback"
+      },
+      {
+        "source": "feedback_trigger_direction",
+        "title": "Feedback Trigger Direction",
+        "type": "combo",
+        "validation": [
+          "above",
+          "below"
+        ],
+        "description": "Use above for the current lateral thigh/back pelvis placement if normal extension is vibrating"
+      },
+      {
+        "source": "min_threshold",
+        "title": "Feedback Threshold Angle",
+        "type": "float",
+        "validation": [
+          -90,
+          90
+        ],
+        "description": "Feedback threshold. Direction is controlled by Feedback Trigger Direction"
+      },
+      {
+        "source": "hysteresis_deg",
+        "title": "Hysteresis",
+        "type": "float",
+        "validation": [
+          0,
+          20
+        ],
+        "description": "Deadband around threshold to prevent vibration chatter"
+      },
+      {
+        "source": "cooldown_ms",
+        "title": "Cooldown Milliseconds",
+        "type": "float",
+        "validation": [
+          0,
+          2000
+        ],
+        "description": "Minimum time between repeated vibration pulses"
+      },
+      {
+        "source": "moving_average_window",
+        "title": "Moving Average Window",
+        "type": "int",
+        "validation": [
+          1,
+          25
+        ],
+        "description": "Number of 100 Hz samples used to smooth hip angle"
+      },
+      {
+        "source": "extension_direction",
+        "title": "Extension Direction",
+        "type": "combo",
+        "validation": [
+          "decreasing",
+          "increasing"
+        ],
+        "description": "How the right hip angle changes when the right hip is extending"
+      },
+      {
+        "source": "extension_velocity_threshold",
+        "title": "Extension Velocity Threshold",
+        "type": "float",
+        "validation": [
+          0,
+          10
+        ],
+        "description": "Instant per-sample right hip angle change that starts extension detection"
+      },
+      {
+        "source": "trend_window_ms",
+        "title": "Trend Window Milliseconds",
+        "type": "float",
+        "validation": [
+          100,
+          2000
+        ],
+        "description": "Time window used to detect slow sustained hip extension"
+      },
+      {
+        "source": "extension_trend_threshold",
+        "title": "Extension Trend Threshold",
+        "type": "float",
+        "validation": [
+          0,
+          20
+        ],
+        "description": "Angle change over the trend window needed to detect slow hip extension"
+      },
+      {
+        "source": "reset_velocity_threshold",
+        "title": "Reset Velocity Threshold",
+        "type": "float",
+        "validation": [
+          0,
+          10
+        ],
+        "description": "Instant opposite-direction angle change that resets feedback during flexion"
+      },
+      {
+        "source": "reset_trend_threshold",
+        "title": "Reset Trend Threshold",
+        "type": "float",
+        "validation": [
+          0,
+          20
+        ],
+        "description": "Opposite-direction trend that resets feedback during slow flexion or sitting"
+      },
+      {
+        "source": "movement_gate_enabled",
+        "title": "Enable Movement Gate",
+        "type": "bool",
+        "description": "Only allow vibration feedback while movement is detected"
+      },
+      {
+        "source": "movement_gate_gyro_threshold",
+        "title": "Movement Gate Gyro Threshold",
+        "type": "float",
+        "validation": [
+          0,
+          200
+        ],
+        "description": "Minimum thigh gyro magnitude required before feedback can vibrate"
+      }
+    ],
+    [
+      "Orientation Debug",
+      {
+        "source": "debug_orientation_enabled",
+        "title": "Enable Orientation Debug",
+        "type": "bool",
+        "description": "Enable periodic IMU orientation debug output"
+      },
+      {
+        "source": "debug_orientation_print_enabled",
+        "title": "Print Orientation To Terminal",
+        "type": "bool",
+        "description": "Print yaw/pitch/roll and IMU X/Y/Z axes to the app terminal/log"
+      },
+      {
+        "source": "debug_orientation_udp_enabled",
+        "title": "Stream Orientation Over UDP",
+        "type": "bool",
+        "description": "Send orientation JSON packets to the desktop 3D viewer"
+      },
+      {
+        "source": "debug_orientation_hz",
+        "title": "Orientation Debug Hz",
+        "type": "float",
+        "validation": [
+          1,
+          30
+        ],
+        "description": "How many orientation debug packets or print lines to emit per second"
+      },
+      {
+        "source": "debug_orientation_udp_port",
+        "title": "UDP Port",
+        "type": "int",
+        "validation": [
+          1024,
+          65535
+        ],
+        "description": "UDP destination port used by scripts/realtime_imu_orientation_viewer.py"
+      }
+    ],
+    [
+      "Save Options",
+      {
+        "source": "save_mode",
+        "title": "Save Mode",
+        "type": "combo",
+        "validation": [
+          "csv",
+          "h5",
+          "xlsx"
+        ],
+        "description": "Save file in specified format"
+      }
+    ]
+  ],
+  "user_fields": [
+    {
+      "name": "time",
+      "data_type": "float",
+      "size": 1
+    },
+    {
+      "name": "Hip_ext",
+      "data_type": "float",
+      "size": 1
+    },
+    {
+      "name": "filtered_Hip_ext",
+      "data_type": "float",
+      "size": 1
+    },
+    {
+      "name": "right_Hip_ext",
+      "data_type": "float",
+      "size": 1
+    },
+    {
+      "name": "left_Hip_ext",
+      "data_type": "float",
+      "size": 1
+    },
+    {
+      "name": "filtered_right_Hip_ext",
+      "data_type": "float",
+      "size": 1
+    },
+    {
+      "name": "filtered_left_Hip_ext",
+      "data_type": "float",
+      "size": 1
+    },
+    {
+      "name": "min_threshold",
+      "data_type": "float",
+      "size": 1
+    },
+    {
+      "name": "min_feedback_state",
+      "data_type": "int",
+      "size": 1
+    },
+    {
+      "name": "right_leg_back_state",
+      "data_type": "int",
+      "size": 1
+    },
+    {
+      "name": "left_leg_forward_state",
+      "data_type": "int",
+      "size": 1
+    },
+    {
+      "name": "target_phase_state",
+      "data_type": "int",
+      "size": 1
+    },
+    {
+      "name": "right_hip_velocity",
+      "data_type": "float",
+      "size": 1
+    },
+    {
+      "name": "right_hip_trend",
+      "data_type": "float",
+      "size": 1
+    },
+    {
+      "name": "right_hip_extending_state",
+      "data_type": "int",
+      "size": 1
+    },
+    {
+      "name": "right_hip_flexing_state",
+      "data_type": "int",
+      "size": 1
+    },
+    {
+      "name": "feedback_phase_state",
+      "data_type": "int",
+      "size": 1
+    },
+    {
+      "name": "feedback_mode_code",
+      "data_type": "int",
+      "size": 1
+    },
+    {
+      "name": "feedback_metric",
+      "data_type": "float",
+      "size": 1
+    },
+    {
+      "name": "feedback_reason_code",
+      "data_type": "int",
+      "size": 1
+    },
+    {
+      "name": "gyro_mag",
+      "data_type": "float",
+      "size": 1
+    },
+    {
+      "name": "acc_mag",
+      "data_type": "float",
+      "size": 1
+    },
+    {
+      "name": "right_gyro_mag",
+      "data_type": "float",
+      "size": 1
+    },
+    {
+      "name": "left_gyro_mag",
+      "data_type": "float",
+      "size": 1
+    },
+    {
+      "name": "right_acc_mag",
+      "data_type": "float",
+      "size": 1
+    },
+    {
+      "name": "left_acc_mag",
+      "data_type": "float",
+      "size": 1
+    },
+    {
+      "name": "debug_orientation_enabled_state",
+      "data_type": "int",
+      "size": 1
+    },
+    {
+      "name": "debug_orientation_udp_enabled_state",
+      "data_type": "int",
+      "size": 1
+    },
+    {
+      "name": "debug_orientation_udp_send_count",
+      "data_type": "int",
+      "size": 1
+    },
+    {
+      "name": "debug_orientation_udp_error_count",
+      "data_type": "int",
+      "size": 1
+    },
+    {
+      "name": "debug_orientation_udp_last_error_code",
+      "data_type": "int",
+      "size": 1
+    },
+    {
+      "name": "debug_orientation_udp_target_port",
+      "data_type": "int",
+      "size": 1
+    },
+    {
+      "name": "debug_orientation_udp_target_last_octet",
+      "data_type": "int",
+      "size": 1
+    },
+    {
+      "name": "target_met",
+      "data_type": "int",
+      "size": 1
+    }
+  ],
+  "sensors": [
+    "right_thigh",
+    "left_thigh",
+    "pelvis"
+  ],
+  "feedback": [
+    "feedback_min"
+  ],
+  "Is_pull": true,
+  "pulse_length": 1,
+  "datarate": 100
+}
