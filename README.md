@@ -1,6 +1,7 @@
 # IMU Hip Extension Feedback
 
-**Developed by:** Yknighter and Wai-Hang Kwong
+**Developed by:** Yknighter and Wai-Hang Kwong  
+**Affiliation:** Department of Rehabilitation Sciences, The Hong Kong Polytechnic University / Gait Analysis Laboratory
 
 Phase 1 app for real-time hip extension feedback using SageMotion IMU/Dot nodes.
 
