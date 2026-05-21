@@ -1,5 +1,7 @@
 # IMU Hip Extension Feedback
 
+**Developed by:** Yknighter and Wai-Hang Kwong
+
 Phase 1 app for real-time hip extension feedback using SageMotion IMU/Dot nodes.
 
 This package is based on the official Hip Extension app and adds:
