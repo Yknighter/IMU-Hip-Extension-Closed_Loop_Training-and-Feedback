@@ -1,9 +1,10 @@
 # IMU Hip Extension Feedback
 
-> ## Authors
-> **Yknighter** and **Wai-Hang Kwong**  
-> **Department of Rehabilitation Sciences, The Hong Kong Polytechnic University**  
-> **Gait Analysis Laboratory**
+> ## Project Credits
+> **Author:** Yknighter  
+> **Supervisor:** Dr. Wai-Hang Kwong  
+> **Affiliation:** Department of Rehabilitation Sciences, The Hong Kong Polytechnic University  
+> **Laboratory:** Gait Analysis Laboratory
 
 Phase 1 app for real-time hip extension feedback using SageMotion IMU/Dot nodes.
 
