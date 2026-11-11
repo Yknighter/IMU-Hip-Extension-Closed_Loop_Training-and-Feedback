@@ -8,11 +8,13 @@ SageMotion Hub Apps and a Windows live viewer for hip-extension training. The cu
 
 Both App directories contain the individual Python modules, JSON configuration, README and supporting files. Open a directory to read or review the code directly on GitHub.
 
+**Experimental candidate:** [v19.9v — probably solve: source, packages and limitations](probably-solve/v19.9v/). Awaiting hardware validation; this does not claim to fix wireless dropouts.
+
 [Download](#download) · [Quick start](#quick-start) · [Troubleshooting](#troubleshooting) · [Source and documentation](#source-and-documentation)
 
 ## Download
 
-### v19.8 — latest published version
+### v19.8 — current regular package
 
 App version `1_19_8vibrant` · build **901800**
 
