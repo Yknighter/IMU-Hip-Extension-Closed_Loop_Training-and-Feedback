@@ -6,6 +6,18 @@
 > **Affiliation:** Department of Rehabilitation Sciences, The Hong Kong Polytechnic University  
 > **Laboratory:** Gait Analysis Laboratory
 
+## v19.7 and v19.8 packages
+
+- [v19.7 - App build 901701, matching viewer and source](versions/v19.7/)
+- [v19.8 - App build 901800, matching viewer and source](versions/v19.8/)
+- [Version index and installation notes](versions/README.md)
+
+Each version contains an App import ZIP, a separate desktop-viewer ZIP, source code, documentation, Windows launchers and offline tests. Import the IMU_Hip_Extension_Feedback ZIP into the Hub; extract and run the Fast_IMU_Training_Viewer ZIP on the computer.
+
+Both versions use CSV recording with reduced dynamic telemetry and include the float-field fixes. v19.8 updates App/viewer version labels and the guide. Sensor-3 communication dropouts remain a device/Hub issue to investigate.
+
+## Original app documentation
+
 Phase 1 app for real-time hip extension feedback using SageMotion IMU/Dot nodes.
 
 This package is based on the official Hip Extension app and adds:
