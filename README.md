@@ -1,147 +1,100 @@
 # IMU Hip Extension Feedback
 
-> ## Project Credits
-> **Author:** Yknighter  
-> **Supervisor:** Dr. Wai-Hang Kwong  
-> **Affiliation:** Department of Rehabilitation Sciences, The Hong Kong Polytechnic University  
-> **Laboratory:** Gait Analysis Laboratory
+SageMotion Hub Apps and a Windows live viewer for hip-extension training. The current packages record synchronized IMU data to CSV and show the hip-extension angle, training target and feedback events.
 
-## v19.7 and v19.8 packages
+**English** | [简体中文](README.zh-CN.md)
 
-- [v19.7 - App build 901701, matching viewer and source](versions/v19.7/)
-- [v19.8 - App build 901800, matching viewer and source](versions/v19.8/)
-- [Version index and installation notes](versions/README.md)
+[Download](#download) · [Quick start](#quick-start) · [Troubleshooting](#troubleshooting) · [Source and documentation](#source-and-documentation)
 
-Each version contains an App import ZIP, a separate desktop-viewer ZIP, source code, documentation, Windows launchers and offline tests. Import the IMU_Hip_Extension_Feedback ZIP into the Hub; extract and run the Fast_IMU_Training_Viewer ZIP on the computer.
+## Download
 
-Both versions use CSV recording with reduced dynamic telemetry and include the float-field fixes. v19.8 updates App/viewer version labels and the guide. Sensor-3 communication dropouts remain a device/Hub issue to investigate.
+### v19.8 — latest published version
 
-## Original app documentation
+App version `1_19_8vibrant` · build **901800**
 
-Phase 1 app for real-time hip extension feedback using SageMotion IMU/Dot nodes.
+- **For the Hub:** [Download the v19.8 App ZIP](https://github.com/Yknighter/wenfeng/raw/refs/heads/main/versions/v19.8/IMU_Hip_Extension_Feedback_v1_19_8vibrant.zip).
+- **For the Windows computer:** [Download the v19.8 viewer ZIP](https://github.com/Yknighter/wenfeng/raw/refs/heads/main/versions/v19.8/Fast_IMU_Training_Viewer_v19_8.zip).
+- **Instructions:** [App guide (PDF)](versions/v19.8/IMU_Hip_Extension_Feedback_v1_19_8vibrant/Hip%20Extension%20App%20Guide.pdf) · [App details](versions/v19.8/IMU_Hip_Extension_Feedback_v1_19_8vibrant/README.md) · [All v19.8 files](versions/v19.8/).
 
-This package is based on the official Hip Extension app and adds:
+> Download both ZIPs. Import the **App ZIP into the Hub**. Extract the **viewer ZIP on the computer** and run its launcher.
 
-- Angle-threshold feedback
-- 5-sample moving average smoothing
-- Hysteresis to prevent vibration chatter
-- Feedback cooldown
-- Optional movement gate using thigh gyroscope magnitude
-- Diagnostic save fields for offline validation
-- Optional v1.4 orientation debug output:
-  - terminal/log print of each IMU yaw/pitch/roll and X/Y/Z axes
-  - UDP JSON stream for a desktop Python 3D orientation viewer
-  - v1.4.1 UDP send/error counters saved with trial data
+<details>
+<summary>Need v19.7? Open the previous-version downloads.</summary>
 
-### Nodes Required: 4
-- **Sensing (3)**:
-  - pelvis (back center, switch pointing up)
-  - right_thigh (right lateral thigh, switch pointing up)
-  - left_thigh (left lateral thigh, switch pointing up)
-- **Feedback (1)**:
-  - feedback_min
+App version `1_19_7vibrant` · build **901701**
 
-### Feedback Timing
+- [Download the v19.7 Hub App ZIP](https://github.com/Yknighter/wenfeng/raw/refs/heads/main/versions/v19.7/IMU_Hip_Extension_Feedback_v1_19_7vibrant.zip).
+- [Download the v19.7 Windows viewer ZIP](https://github.com/Yknighter/wenfeng/raw/refs/heads/main/versions/v19.7/Fast_IMU_Training_Viewer_v19_7.zip).
+- [App details](versions/v19.7/IMU_Hip_Extension_Feedback_v1_19_7vibrant/README.md) · [All v19.7 files](versions/v19.7/).
 
-Feedback is only allowed when:
+Run `start_v19_7_viewer.cmd` after extracting the viewer ZIP. The PDF inside the historical v19.7 App package has older version labels; use its App README for the matching instructions.
 
-1. the right thigh is in the configured back-leg phase, and
-2. the left thigh is in the configured forward phase, and
-3. the right hip is entering extension.
+</details>
 
-Inside that target phase, the app vibrates `feedback_min` only when the right hip extension metric crosses the feedback threshold. Once terminal range is reached, the app stops vibration until the next flexion/reset cycle.
+Both versions include CSV saving, 155 dynamic user fields, float-field corrections, and viewer calibration, reconnect and stalled-stream messages. v19.8 adds synchronized version labels, the active Hub version in the viewer status bar, and an updated PDF guide.
 
-Slow movements are handled by a trend window:
+## Quick start
 
-- `right_hip_velocity`: frame-to-frame right hip angle change
-- `right_hip_trend`: right hip angle change over the configured trend window
+The steps below use v19.8. You need a SageMotion Hub, four IMU/Dot nodes, a connected Windows computer, and a Hub SDK with `sensor_vibration_on()` and `sensor_vibration_off()` support.
 
-### Orientation Debug Viewer
+1. **Download the two v19.8 ZIPs above.** Stop the old Hub App, then import `IMU_Hip_Extension_Feedback_v1_19_8vibrant.zip` through the Hub page. Select **IMU Hip Extension Feedback V19_8vibrant** and check build **901800** in its description.
+2. **Assign the four sensing nodes in this order:** `right_thigh`, `left_thigh`, `pelvis`, `vibration_monitor`. The fourth node is the existing vibration node, now also recording acceleration. The separate feedback list is empty; assign each physical node once.
+3. **Set Training Leg, Feedback Enabled, trial name and save location.** Recording defaults to CSV. See [the App instructions](versions/v19.8/IMU_Hip_Extension_Feedback_v1_19_8vibrant/README.md) for settings and feedback rules.
+4. **Extract the viewer ZIP into one folder.** Double-click `start_v19_8_viewer.cmd` or `開啟V19_8vibrant查看器.cmd`. Check that the window title shows **V19.8**. If Python or a dependency is missing, follow [Viewer setup](#viewer-setup).
+5. **Click Start on the Hub page.** Stand naturally until posture has been stable for 2 seconds and calibration finishes. Then walk naturally for the default 60-second assessment; training follows automatically. The viewer shows the current stage.
 
-v1.4 emits each IMU orientation over UDP at a low debug rate by default without
-changing the feedback state machine. Terminal printing is off by default because
-plain text output can confuse the SageMotion browser plot websocket.
+### What the viewer shows
 
-Recommended debug settings:
+- **Blue line:** signed hip-extension angle; positive values represent extension.
+- **Green line:** current training target.
+- **Red dots:** recorded vibration command events, not a measurement of physical motor response.
+- **Top message and bottom status:** calibration, assessment, connection state, stale data, viewer version and active Hub App version ID.
 
-```json
-{
-  "debug_orientation_enabled": true,
-  "debug_orientation_print_enabled": false,
-  "debug_orientation_udp_enabled": true,
-  "debug_orientation_hz": 5,
-  "debug_orientation_udp_host": "192.168.12.255",
-  "debug_orientation_udp_port": 50514
-}
+The viewer receives data and reads Hub status. Start, stop and node connection controls remain on the Hub page.
+
+## Viewer setup
+
+The viewer needs **Python 3 with Tkinter** and **`websocket-client`**. The Windows launcher first tries `C:\Python39\python.exe`, then `python` on PATH. Install the dependency in the interpreter that runs the viewer.
+
+From the extracted viewer folder, with Python on PATH:
+
+```powershell
+python -m pip install websocket-client
+python fast_imu_training_viewer_v19_8.py --hub-ip 192.168.137.1
 ```
 
-Start the desktop viewer on the computer connected to the SageMotion Wi-Fi:
+If the launcher uses `C:\Python39\python.exe`, install into that environment:
 
-```bash
-python3 scripts/realtime_imu_orientation_viewer.py --port 50514
+```powershell
+& 'C:\Python39\python.exe' -m pip install websocket-client
 ```
 
-For offline replay tests, add an idle timeout so the viewer closes after the
-data stream ends:
+Defaults: Hub IP **192.168.137.1**, WebSocket **5678**, status API **80**. To use another Hub address:
 
-```bash
-python3 scripts/realtime_imu_orientation_viewer.py --host 127.0.0.1 --port 50514 --idle-timeout 3
+```powershell
+.\start_v19_8_viewer.cmd --hub-ip 192.168.137.2
 ```
 
-The viewer expects `matplotlib` to be available in the desktop Python
-environment.
+## Troubleshooting
 
-UDP diagnostics are saved and streamed with each sample:
+- **The window opens but has no curves:** check the top message. `READY` or `CONFIGURE` means the Hub App has not started collecting. Complete setup and click Start; check sensor connections if the viewer reports invalid posture data.
+- **The App stops or curves stop updating:** check the Hub log. A sensor-3 timeout or `Fail to fetch sensor data` means the synchronized acquisition has lost node data. Sensor 3 is `vibration_monitor` in this configuration. Stop the App, check and reconnect that node; restart the nodes or Hub if needed. Viewer reconnection cannot restore a failed driver stream. Sensor-3 dropouts observed during testing remain unresolved in these packages.
+- **The Hub rejects a ZIP:** import the `IMU_Hip_Extension_Feedback_...zip` App package. The `Fast_IMU_Training_Viewer_...zip` package runs on the computer.
+- **`No module named websocket`:** install `websocket-client` in the Python environment used by the launcher; see [Viewer setup](#viewer-setup).
 
-- `debug_orientation_enabled_state`: 1 when orientation debug is enabled
-- `debug_orientation_udp_enabled_state`: 1 when UDP output is enabled
-- `debug_orientation_udp_send_count`: number of successful UDP packets sent
-- `debug_orientation_udp_error_count`: number of UDP send errors
-- `debug_orientation_udp_last_error_code`: last socket error number, or 0 after success
-- `debug_orientation_udp_target_port`: UDP destination port
-- `debug_orientation_udp_target_last_octet`: last IPv4 octet of the configured UDP host
+## Source and documentation
 
----
+- [v19.8 source, packages and tests](versions/v19.8/) · [v19.7 source, packages and tests](versions/v19.7/).
+- [Version index](versions/README.md) · [Viewer details](versions/v19.8/README_v19_8_viewer.md) · [Recording fields and feedback rules](versions/v19.8/IMU_Hip_Extension_Feedback_v1_19_8vibrant/README.md).
+- Each version includes `SHA256SUMS` for download verification and its own `verification/` directory. **14 v19.7 checks and 15 v19.8 checks passed**, covering recording types, stream parsing, reconnection and Tk curve rendering. These are offline results; they do not establish physical motor timing or wireless stability.
+- The root-level App files belong to **legacy v1.4.1**. Use `versions/` for the current packages. [Archived v1.4.1 documentation](docs/legacy-v1.4.1.md).
+- [SageMotion Python API documentation](https://docs.sagemotion.com/app_writing/python-api).
 
-## Algorithm & Calibration
+## Project credits
 
-### Algorithm Information
-The app uses quaternion data from IMUs to calculate 3D joint angles. The orientation is converted into XYZ Euler angles, from which the sagittal plane (hip extension) angle is extracted. This angle reflects relative rotation between the thigh and pelvis segments.
+- **Author:** Yknighter
+- **Supervisor:** Dr. Wai-Hang Kwong
+- **Affiliation:** Department of Rehabilitation Sciences, The Hong Kong Polytechnic University
+- **Laboratory:** Gait Analysis Laboratory
 
-### Calibration Process
-On the first iteration, the app aligns sensor orientation to body segment alignment:
-- Calculates yaw offset between pelvis and thigh
-- Applies this alignment to correct global measurements
-- Uses predefined target orientation as a reference
-
----
-
-## Description of Data in Downloaded File
-
-### Calculated Fields
-- **time (sec)**: time since trial start
-- **Hip_ext (deg)**: hip flexion/extension angle
-- **filtered_Hip_ext (deg)**: smoothed hip angle used by the default feedback mode
-- **right_Hip_ext / left_Hip_ext**: raw right and left hip angle estimates
-- **filtered_right_Hip_ext / filtered_left_Hip_ext**: smoothed bilateral hip angles
-- **min_feedback_state**: single vibration feedback state
-- **right_leg_back_state / left_leg_forward_state / target_phase_state**: bilateral phase gate states
-- **right_hip_velocity / right_hip_trend**: instantaneous and slow-trend motion signals
-- **right_hip_extending_state / right_hip_flexing_state**: motion direction states
-- **feedback_phase_state**: 0 waiting, 1 extending, 2 terminal range reached
-- **feedback_mode_code**: 0 angle, 1 gyro magnitude, 2 acceleration magnitude
-- **feedback_reason_code**: 0 terminal range reached, 1 insufficient hip extension, 3 phase gate blocked, 4 waiting for extension, 5 qualified, 6 flexion reset
-- **gyro_mag / acc_mag**: thigh movement features used for diagnostics and optional feedback modes
-
-### Sensor Raw Data Fields (repeated for each sensor)
-- SensorIndex
-- AccelX/Y/Z (m/s²)
-- GyroX/Y/Z (deg/s)
-- MagX/Y/Z (μT)
-- Quat1/2/3/4 (quaternion, scalar first order)
-- Sampletime (timestamp)
-- Package (packet number)
-
-
-## Development Notes
-The best place to start when developing a new app or modifying an existing one is the [SageMotion Documentation](http://docs.sagemotion.com/index.html) page.
+[Repository license](LICENSE.md)
