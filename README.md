@@ -4,6 +4,10 @@ SageMotion Hub Apps and a Windows live viewer for hip-extension training. The cu
 
 **English** | [简体中文](README.zh-CN.md)
 
+**Read App source online:** [v19.8 source files](versions/v19.8/IMU_Hip_Extension_Feedback_v1_19_8vibrant/) · [v19.7 source files](versions/v19.7/IMU_Hip_Extension_Feedback_v1_19_7vibrant/)
+
+Both App directories contain the individual Python modules, JSON configuration, README and supporting files. Open a directory to read or review the code directly on GitHub.
+
 [Download](#download) · [Quick start](#quick-start) · [Troubleshooting](#troubleshooting) · [Source and documentation](#source-and-documentation)
 
 ## Download

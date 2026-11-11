@@ -4,6 +4,10 @@
 
 [English](README.md) | **简体中文**
 
+**在线阅读 App 源码：**[v19.8 源码目录](versions/v19.8/IMU_Hip_Extension_Feedback_v1_19_8vibrant/) · [v19.7 源码目录](versions/v19.7/IMU_Hip_Extension_Feedback_v1_19_7vibrant/)
+
+两个目录都已逐个上传 Python 模块、JSON 配置、README 及配套文件，点开即可在 GitHub 上直接阅读和审查代码。
+
 [下载文件](#下载文件) · [开始使用](#开始使用) · [常见问题](#常见问题) · [源码与详细说明](#源码与详细说明)
 
 ## 下载文件
