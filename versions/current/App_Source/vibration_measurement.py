@@ -1,7 +1,7 @@
-"""Independent acceleration recording and provisional vibration detection.
+"""Record vibration command timing and optional sensor measurement metrics.
 
-No detector threshold is assumed valid for a particular motor or mounting.
-Threshold zero records the signal but leaves detection/comparison unknown.
+V19.81 uses a separate feedback node, so its monitor stream is intentionally
+disabled while command timing remains available.
 """
 from collections import deque
 import math
@@ -129,6 +129,15 @@ class VibrationMeasurement:
     def mark_recording_gap(self):
         self._invalidate(5)
 
+    def disable_sensor_monitoring(self):
+        """Record that V19.81 does not stream the separate feedback node."""
+        self.values.update(vibration_monitor_valid=0,
+                           vibration_monitor_quality=6,
+                           vibration_measured_state=-1,
+                           vibration_expected_state=int(
+                               self.values["vibration_command_state"]),
+                           vibration_comparison_state=0)
+
     def update(self, node, now):
         v = self.values
         v["vibration_arrival_time_sec"] = float(now) - self.origin
@@ -214,6 +223,10 @@ class VibrationMeasurement:
 
     def metrics(self):
         v = self.values
+        if not v["vibration_monitor_valid"]:
+            v["vibration_expected_state"] = int(v["vibration_command_state"])
+            v["vibration_comparison_state"] = 0
+            return dict(v)
         stamp = v["vibration_signal_time_sec"]
         windows = [w for w in self.recent_commands if w[0] <= stamp]
         expected = int(any(start <= stamp < end for start, end in windows))

@@ -1,15 +1,10 @@
-# Versioned App and viewer packages
+# Current Hub App and viewer
 
-- [v19.7 - build 901701](v19.7/)
-- [v19.8 - build 901800](v19.8/)
+- [V19.81 — current release, build 901810](current/)
+- [V19.7 — previous package](v19.7/)
 
-## Browse the App source
+The current source and packages live in the stable `current/` directory. It contains the V19.81 Hub import ZIP, Windows viewer ZIP, viewer launcher and source, App source, instructions, and SHA256 checksums.
 
-- [v19.7 Python modules and configuration](v19.7/IMU_Hip_Extension_Feedback_v1_19_7vibrant/)
-- [v19.8 Python modules and configuration](v19.8/IMU_Hip_Extension_Feedback_v1_19_8vibrant/)
+In V19.81, `right_thigh`, `left_thigh`, and `pelvis` are listed under `sensors`; `feedback_min` is listed separately under `feedback`. The App calls `feedback_vibration_on/off` and retains the hip-angle closed-loop trigger and adaptive target updates.
 
-Each App source directory contains 24 individual files, including 18 Python modules. The code can be read directly on GitHub alongside the downloadable ZIP packages.
-
-Each version includes its own App source, Hub import ZIP, desktop viewer, Windows launchers, documentation, and offline tests. Import only the IMU_Hip_Extension_Feedback App ZIP into the Hub. Extract the Fast_IMU_Training_Viewer ZIP on the computer and run its launcher.
-
-v19.8 synchronizes the App/viewer version labels, shows the viewer and active Hub version in the status bar, and includes the updated App guide. Both versions retain CSV saving, reduced dynamic telemetry and float-field fixes. Sensor-3 communication dropouts still require device/Hub diagnosis.
+The previous V19.8 contents were replaced in the current tree and remain accessible in Git history. No V19.81 hardware validation or offline test run is claimed.
