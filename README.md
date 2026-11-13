@@ -1,6 +1,6 @@
 # IMU Hip Extension Training and Feedback
 
-**Developed by:** Yknighter and Wai-Hang Kwong  
+**Developed by:** [Yknighter](https://github.com/Yknighter) and [Wai-Hang Kwong](https://github.com/PKwong86)  
 **Affiliation:** Department of Rehabilitation Sciences, The Hong Kong Polytechnic University / Gait Analysis Laboratory
 
 The current release is **V19.81** for SageMotion Hub, with a read-only Windows live viewer.
@@ -38,3 +38,8 @@ The viewer needs Python 3, Tkinter, and `websocket-client`. The launcher first t
 - Current files use the stable `versions/current/` path. Previous V19.8 files remain accessible in Git history.
 
 This publication does not claim V19.81 offline tests or hardware validation. [Repository license](LICENSE.md)
+
+## Contributors
+
+- [Yknighter (@Yknighter)](https://github.com/Yknighter)
+- [Wai-Hang Kwong (@PKwong86)](https://github.com/PKwong86)
