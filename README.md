@@ -1,5 +1,8 @@
 # IMU Hip Extension Training and Feedback
 
+**Developed by:** Yknighter and Wai-Hang Kwong  
+**Affiliation:** Department of Rehabilitation Sciences, The Hong Kong Polytechnic University / Gait Analysis Laboratory
+
 The current release is **V19.81** for SageMotion Hub, with a read-only Windows live viewer.
 
 **Downloads:** [Hub App ZIP](versions/current/IMU_Hip_Extension_Feedback_v1_19_81vibrant.zip) · [Windows viewer ZIP](versions/current/Fast_IMU_Training_Viewer_v19_81.zip)
