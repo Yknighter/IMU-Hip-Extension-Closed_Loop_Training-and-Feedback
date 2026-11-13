@@ -77,22 +77,33 @@ flowchart TD
 ## 4. 即时奖励状态机
 
 ```mermaid
-stateDiagram-v2
-    state "等待中立位" as WaitNeutral
-    state "已就绪" as Armed
-    state "后伸中" as Extending
-    state "本次已达标" as Qualified
-    [*] --> WaitNeutral
-    WaitNeutral --> Armed: E ≤ 0 持续 200 ms
-    Armed --> Extending: E > 0，锁定本次目标
-    Extending --> Qualified: E ≥ 锁定目标，持续 30 ms
-    Qualified --> Qualified: 保持后伸不会重复奖励
-    Qualified --> Armed: E ≤ 0 持续 200 ms
-    Extending --> Armed: E ≤ 0 持续 200 ms
-    Armed --> WaitNeutral: 数据无效或反馈被阻止
-    Extending --> WaitNeutral: 数据无效或反馈被阻止
-    Qualified --> WaitNeutral: 数据无效或反馈被阻止
+flowchart TD
+    A["1 · 回到中立位<br/>E ≤ 0，持续 200 ms"]
+    B["2 · 准备下一次动作<br/>等待 E > 0"]
+    C["3 · 开始后伸<br/>锁定本次动作目标"]
+    D["4 · 确认达标<br/>E ≥ 目标，持续 30 ms"]
+    E["5 · 本次达标<br/>请求一次 0.2 秒奖励震动"]
+    F["6 · 锁定本次动作<br/>保持后伸不会重复奖励"]
+    A --> B --> C --> D --> E --> F
+    classDef prepare fill:#eff6ff,stroke:#2563eb,color:#172554
+    classDef active fill:#ecfdf5,stroke:#059669,color:#064e3b
+    classDef hold fill:#fff7ed,stroke:#d97706,color:#78350f
+    class A,B prepare
+    class C,D active
+    class E,F hold
 ```
+
+**E** 为滤波后的正向后伸指标。图中展示正常完成一次达标动作的主流程。
+
+| 情况 | 控制器行为 |
+|---|---|
+| 30 ms 确认完成前，E 降到目标以下 | 清空达标计时，重新要求连续达标 30 ms |
+| E 回到 ≤ 0 并持续 200 ms，无论本次是否获得奖励 | 重新就绪，进入下一次动作（步骤 2） |
+| 动作达标时已有活动震动 | 抑制新脉冲，本次仍保持已达标状态 |
+| 请求的脉冲时长到期 | 请求停震，继续保持本次动作锁定 |
+| 数据无效或反馈被阻止 | 取消当前动作，尝试停震，从步骤 1 重新就绪 |
+
+上述时间为按样本计数计算的标称时长；发出命令不代表已经确认物理震动。
 
 [RewardFeedbackController](../versions/current/App_Source/reward_feedback.py) 在达标时请求一次 0.2 秒、固定强度 2 的短震动。时长上限为 0.25 秒；强度必须为 1–4 的整数。如果达标时已有活动震动，新脉冲被抑制。活动脉冲到期后请求停震。
 
