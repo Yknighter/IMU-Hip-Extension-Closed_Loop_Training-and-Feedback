@@ -15,32 +15,9 @@ Three posture IMUs → stable standing calibration → relative hip angles → i
 
 [Full English explanation](docs/project-logic.md) · [完整中文逻辑说明](docs/project-logic.zh-CN.md)
 
-```mermaid
-flowchart TD
-    A["Pelvis and both thigh IMUs: nominal 100 Hz"] --> B{"Valid sensor frame?"}
-    B -->|No| X["Cancel reward, attempt motor off, clear filters"]
-    B -->|Yes| C{"Standing calibration complete?"}
-    C -->|No| D["Collect stable pose for 2 s; restart on movement or interruption"]
-    D --> E["Average quaternions; establish yaw alignment and hip zero"]
-    E --> F["Relative hip angle; 5-sample moving average"]
-    C -->|Yes| F
-    F --> G["Select training leg; convert to positive extension E"]
-    G --> H{"Initial adaptive assessment?"}
-    H -->|Yes| I["Silent 60 s assessment using valid episode peaks"]
-    I --> J["75th-percentile sample, floor; target bounded by 1 and 15 degrees"]
-    J --> K["Training"]
-    H -->|No| K
-    K --> L["Reward state machine: neutral rearm, target dwell, one pulse"]
-    K --> M["Completed episode peaks and success ratio"]
-    M --> N["At least 8 valid episodes and 80% success per 60 s window"]
-    N --> O["Increase target by 1 degree, up to 15"]
-    O --> K
-    L --> P["Command-only feedback_min node"]
-    G --> Q["Hub recording and telemetry"]
-    M --> Q
-    L --> Q
-    Q --> R["Read-only Windows viewer"]
-```
+![Project logic overview](docs/assets/project-overview.en.svg)
+
+[Open full-size diagram](docs/assets/project-overview.en.svg)
 
 ## What changed in V19.81
 
