@@ -1,6 +1,6 @@
 # IMU 髋关节后伸训练与反馈
 
-**Developed by:** Yknighter and Wai-Hang Kwong  
+**Developed by:** [Yknighter](https://github.com/Yknighter) and [Wai-Hang Kwong](https://github.com/PKwong86)  
 **Affiliation:** Department of Rehabilitation Sciences, The Hong Kong Polytechnic University / Gait Analysis Laboratory
 
 SageMotion Hub 当前正式版为 **V19.81 App**，配套只读 Windows 实时查看器。
@@ -38,3 +38,8 @@ SageMotion Hub 当前正式版为 **V19.81 App**，配套只读 Windows 实时�
 - 当前文件统一放在稳定的 `versions/current/` 路径；先前 V19.8 文件可从 Git 历史查看。
 
 本次发布未声称完成 V19.81 离线测试或实机验证。[仓库许可证](LICENSE.md)
+
+## 贡献者（Contributors）
+
+- [Yknighter (@Yknighter)](https://github.com/Yknighter)
+- [Wai-Hang Kwong (@PKwong86)](https://github.com/PKwong86)
