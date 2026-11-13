@@ -76,22 +76,9 @@ Initial assessment does not enforce the later eight-episode minimum. With no val
 
 ## 4. Immediate reward state machine
 
-```mermaid
-flowchart TD
-    A["1 · Return to neutral<br/>E ≤ 0 for 200 ms"]
-    B["2 · Ready for a new cycle<br/>Wait for E > 0"]
-    C["3 · Begin extension<br/>Latch this cycle's target"]
-    D["4 · Confirm target<br/>E ≥ target for 30 ms"]
-    E["5 · Qualify once<br/>Request one 0.2 s reward pulse"]
-    F["6 · Lock this cycle<br/>Holding extension cannot retrigger"]
-    A --> B --> C --> D --> E --> F
-    classDef prepare fill:#eff6ff,stroke:#2563eb,color:#172554
-    classDef active fill:#ecfdf5,stroke:#059669,color:#064e3b
-    classDef hold fill:#fff7ed,stroke:#d97706,color:#78350f
-    class A,B prepare
-    class C,D active
-    class E,F hold
-```
+![Reward cycle — six readable stages](assets/reward-flow.en.svg)
+
+[Open full-size diagram](assets/reward-flow.en.svg)
 
 **E** is the filtered positive-extension metric. This diagram shows the normal successful cycle.
 
