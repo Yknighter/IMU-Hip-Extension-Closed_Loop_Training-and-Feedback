@@ -4,6 +4,10 @@ SageMotion Hub App version: `1_19_81vibrant`; build: **901810**.
 
 **Change summary:** V19.81 separates the command-only `feedback_min` node from the three streamed posture sensors and switches to the `feedback_vibration_on/off` API. The hip-angle closed-loop and adaptive target logic remain unchanged. See the [V19.8 → V19.81 change log](CHANGELOG.md) for the full comparison.
 
+## Project logic / 项目逻辑
+
+Read the bilingual explanation and logic maps: [English](../../docs/project-logic.md) · [简体中文](../../docs/project-logic.zh-CN.md). Covers calibration, hip angles, episode peaks, adaptive targets, reward timing, viewer behavior, and implementation limits for V19.81.
+
 ## Downloads
 
 - Import [IMU_Hip_Extension_Feedback_v1_19_81vibrant.zip](IMU_Hip_Extension_Feedback_v1_19_81vibrant.zip) into the Hub.
