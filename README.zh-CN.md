@@ -1,5 +1,8 @@
 # IMU 髋关节后伸训练与反馈
 
+**Developed by:** Yknighter and Wai-Hang Kwong  
+**Affiliation:** Department of Rehabilitation Sciences, The Hong Kong Polytechnic University / Gait Analysis Laboratory
+
 SageMotion Hub 当前正式版为 **V19.81 App**，配套只读 Windows 实时查看器。
 
 **下载：**[Hub App ZIP](versions/current/IMU_Hip_Extension_Feedback_v1_19_81vibrant.zip) · [Windows 查看器 ZIP](versions/current/Fast_IMU_Training_Viewer_v19_81.zip)
