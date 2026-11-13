@@ -76,22 +76,9 @@ flowchart TD
 
 ## 4. 即时奖励状态机
 
-```mermaid
-flowchart TD
-    A["1 · 回到中立位<br/>E ≤ 0，持续 200 ms"]
-    B["2 · 准备下一次动作<br/>等待 E > 0"]
-    C["3 · 开始后伸<br/>锁定本次动作目标"]
-    D["4 · 确认达标<br/>E ≥ 目标，持续 30 ms"]
-    E["5 · 本次达标<br/>请求一次 0.2 秒奖励震动"]
-    F["6 · 锁定本次动作<br/>保持后伸不会重复奖励"]
-    A --> B --> C --> D --> E --> F
-    classDef prepare fill:#eff6ff,stroke:#2563eb,color:#172554
-    classDef active fill:#ecfdf5,stroke:#059669,color:#064e3b
-    classDef hold fill:#fff7ed,stroke:#d97706,color:#78350f
-    class A,B prepare
-    class C,D active
-    class E,F hold
-```
+![奖励流程：六个步骤](assets/reward-flow.zh.svg)
+
+[查看完整尺寸流程图](assets/reward-flow.zh.svg)
 
 **E** 为滤波后的正向后伸指标。图中展示正常完成一次达标动作的主流程。
 
