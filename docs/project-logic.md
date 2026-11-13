@@ -77,18 +77,33 @@ Initial assessment does not enforce the later eight-episode minimum. With no val
 ## 4. Immediate reward state machine
 
 ```mermaid
-stateDiagram-v2
-    [*] --> WaitNeutral
-    WaitNeutral --> Armed: E <= 0 continuously for 200 ms
-    Armed --> Extending: E > 0; latch current target
-    Extending --> Qualified: E >= latched target continuously for 30 ms
-    Qualified --> Qualified: Holding extension does not retrigger
-    Qualified --> Armed: E <= 0 continuously for 200 ms
-    Extending --> Armed: E <= 0 continuously for 200 ms
-    Armed --> WaitNeutral: Invalid data or feedback blocked
-    Extending --> WaitNeutral: Invalid data or feedback blocked
-    Qualified --> WaitNeutral: Invalid data or feedback blocked
+flowchart TD
+    A["1 · Return to neutral<br/>E ≤ 0 for 200 ms"]
+    B["2 · Ready for a new cycle<br/>Wait for E > 0"]
+    C["3 · Begin extension<br/>Latch this cycle's target"]
+    D["4 · Confirm target<br/>E ≥ target for 30 ms"]
+    E["5 · Qualify once<br/>Request one 0.2 s reward pulse"]
+    F["6 · Lock this cycle<br/>Holding extension cannot retrigger"]
+    A --> B --> C --> D --> E --> F
+    classDef prepare fill:#eff6ff,stroke:#2563eb,color:#172554
+    classDef active fill:#ecfdf5,stroke:#059669,color:#064e3b
+    classDef hold fill:#fff7ed,stroke:#d97706,color:#78350f
+    class A,B prepare
+    class C,D active
+    class E,F hold
 ```
+
+**E** is the filtered positive-extension metric. This diagram shows the normal successful cycle.
+
+| Condition | Controller behavior |
+|---|---|
+| E drops below target before the 30 ms confirmation completes | Clear the target timer; require a new continuous 30 ms interval |
+| Return to E ≤ 0 for 200 ms, with or without a reward | Rearm for the next cycle (step 2) |
+| A pulse is already active when a cycle qualifies | Suppress the new pulse; keep the cycle qualified |
+| Requested pulse time expires | Request motor off; retain the cycle lock |
+| Invalid data or feedback is blocked | Cancel the cycle, attempt motor off, require neutral rearming from step 1 |
+
+All durations are nominal sample-based durations; a command does not confirm physical vibration.
 
 [RewardFeedbackController](../versions/current/App_Source/reward_feedback.py) requests one 0.2 s pulse at fixed strength 2 when an episode qualifies. Duration is capped at 0.25 s, and strength must be an integer from 1 to 4. If a pulse is already active at qualification, the new pulse is suppressed. Active-pulse expiry requests motor off.
 
